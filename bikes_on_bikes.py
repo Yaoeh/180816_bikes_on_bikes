@@ -117,17 +117,14 @@ class BikesForDays():
 		self.total_count+= 1
 		#print('Running: %s' % cool_list_str + ' ' * 100, end='\r')
 		cool_list= [int(v) for v in cool_list_str.split(',')]
-		
-		if (self.check_break_condition(cool_list)): #if breaking
-			# for m in range(n, self.bike_rack_length*2): #set the string to the next one
-			# 	cool_list[m]= self.get_min_range(m)
-
-			#return self.solve_problem_like_a_boss(self.convert_lists_to_str(cool_list), self.bike_rack_length*2)
-			return
+	
 
 		if n < self.bike_rack_length*2: #not all digits are filled yet
 			for x in range(self.get_min_range(n), self.get_max_range(n)+1):
 				cool_list[n]= x #set the digit at that list's location
+
+				if (self.check_break_condition(cool_list)): #if breaking
+					break
 				self.solve_problem_like_a_boss(self.convert_lists_to_str(cool_list), n+1)
 		else: #whole digit is filled
 			if (self.is_valid(cool_list)):
@@ -140,8 +137,6 @@ class BikesForDays():
 		#print('Running: %s' % cool_list + ' ' * 100, end='\r')
 		#cool_list= [int(v) for v in cool_list_str.split(',')]
 		
-		if (self.check_break_condition(cool_list)): #if breaking
-			return
 
 		if n < self.bike_rack_length*2: #not all digits are filled yet
 			for x in range(self.get_min_range(n), self.get_max_range(n)+1):
@@ -149,6 +144,9 @@ class BikesForDays():
 
 				for m in range(n+1, self.bike_rack_length*2): #resetting the list
 					cool_list[m]= self.get_min_range(m)
+
+				if (self.check_break_condition(cool_list)): #if breaking
+					break
 
 				self.solve_problem_like_a_boss2(cool_list, n+1)
 		else: #whole digit is filled
@@ -163,7 +161,7 @@ class BikesForDays():
 
 
 if __name__ == '__main__':
-	bfd= BikesForDays([4,4,4,4])
+	bfd= BikesForDays([4,4,4])
 	start_time = time.time()
 	#bfd.solve_problem()
 	#bfd.solve_problem_like_a_boss(bfd.convert_lists_to_str(bfd.get_starting_list()), 0)
