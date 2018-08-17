@@ -32,9 +32,11 @@ class BikesForDays():
 		self.solution= []
 		self.total_count= 0
 		self.total_valid_count= 0
-		logging.basicConfig(filename='bikes_on_bikes_%s.log' % self.bike_rack_length,level=logging.DEBUG)
+		logging.basicConfig(filename='bikes_on_bikes_%s.log' % self.bike_rack_length,level=logging.INFO)
 		logging.getLogger().addHandler(logging.StreamHandler())
+		logging.getLogger().mode= 'w'
 		logging.info('creating bike for days for %s stations' % self.bike_rack_length)
+		logging.info('profile: %s' % bike_rack_list)
 
 	def get_starting_list(self):
 		return [self.rack_min_value] * self.bike_rack_length+ [self.move_min_value] * self.bike_rack_length
@@ -100,16 +102,18 @@ class BikesForDays():
 
 	def check_break_condition(self, cool_list): #skipping some checks
 		should_break= False
-		for n in range(self.bike_rack_length):
-			if sum(cool_list[:n]) > self.total_number_of_bicycles:
-				should_break= True
-				break
+
+		if (not should_break):		
+			for n in range(self.bike_rack_length):
+				if sum(cool_list[:n]) > self.total_number_of_bicycles:
+					should_break= True
+					break
 
 		if (not should_break): #don't need to check if should already break
 			for n in range(self.bike_rack_length, self.bike_rack_length*2):
 				if sum(cool_list[n:]) > self.total_number_of_bicycles:
 					should_break= True
-					break
+					break			
 
 		return should_break
 
@@ -132,9 +136,11 @@ class BikesForDays():
 				self.solution.append(cool_list)	
 				logging.info('[%s] %s'% (self.total_valid_count, cool_list))
 
-	def solve_problem_like_a_boss2(self, cool_list, n):
+	def solve_problem_like_a_boss2(self, cool_list, n, print_progress= False):
 		self.total_count+= 1
-		#print('Running: %s' % cool_list + ' ' * 100, end='\r')
+
+		if (print_progress):
+			print('[%s] Running: %s' % (self.total_count, cool_list) + ' ' * 10, end='\r')
 		#cool_list= [int(v) for v in cool_list_str.split(',')]
 		
 
@@ -148,7 +154,7 @@ class BikesForDays():
 				if (self.check_break_condition(cool_list)): #if breaking
 					break
 
-				self.solve_problem_like_a_boss2(cool_list, n+1)
+				self.solve_problem_like_a_boss2(cool_list, n+1) #else go to the next digit
 		else: #whole digit is filled
 			if (self.is_valid(cool_list)):
 				self.total_valid_count += 1
@@ -161,7 +167,7 @@ class BikesForDays():
 
 
 if __name__ == '__main__':
-	bfd= BikesForDays([4,4,4,4])
+	bfd= BikesForDays([4]*5)
 	start_time = time.time()
 	#bfd.solve_problem()
 	#bfd.solve_problem_like_a_boss(bfd.convert_lists_to_str(bfd.get_starting_list()), 0)
