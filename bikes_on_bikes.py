@@ -176,7 +176,7 @@ class BikesForDays():
 
 
 if __name__ == '__main__':
-	bfd= BikesForDays([4]*3)
+	bfd= BikesForDays([4]*4)
 	start_time = time.time()
 	#bfd.solve_problem()
 	#bfd.solve_problem_like_a_boss(bfd.convert_lists_to_str(bfd.get_starting_list()), 0)
