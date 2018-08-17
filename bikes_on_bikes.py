@@ -86,6 +86,22 @@ class BikesForDays():
 		logging.info('Total count: %s' % self.total_count)
 		logging.info('Percentage of valids in search space: %s' % (self.total_valid_count*1.0/self.total_count))
 
+	def get_r_max_range(self, cool_list, index):
+		assert index < self.bike_rack_length*2
+		if index < self.bike_rack_length:
+			return self.rack_max_value
+		else:
+			#return self.move_max_value
+			return self.get_move_max_range(cool_list, index)
+
+	def get_r_min_range(self, cool_list, index):
+		assert index < self.bike_rack_length*2
+		if index < self.bike_rack_length:
+			return self.rack_min_value
+		else:
+			#return self.move_min_value
+			return self.get_move_min_range(cool_list, index)
+
 	def get_max_range(self, index):
 		assert index < self.bike_rack_length*2
 		if index < self.bike_rack_length:
@@ -100,7 +116,19 @@ class BikesForDays():
 		else:
 			return self.move_min_value
 
+	def get_move_max_range(self, cool_list, index):
+		assert index > self.bike_rack_length-1
+		return min(self.move_max_value, self.rack_max_value - cool_list[index-self.bike_rack_length])
+
+	def get_move_min_range(self, cool_list, index):
+		assert index > self.bike_rack_length-1
+		return max(self.move_min_value, -cool_list[index-self.bike_rack_length])
+
 	def check_break_condition(self, cool_list): #skipping some checks
+		'''
+		This place is for when adding to n and everything beyond will fail regardless for all digits into the future
+		'''
+
 		should_break= False
 
 		if (not should_break):		
@@ -117,26 +145,7 @@ class BikesForDays():
 
 		return should_break
 
-	def solve_problem_like_a_boss(self, cool_list_str, n):
-		self.total_count+= 1
-		#print('Running: %s' % cool_list_str + ' ' * 100, end='\r')
-		cool_list= [int(v) for v in cool_list_str.split(',')]
-	
-
-		if n < self.bike_rack_length*2: #not all digits are filled yet
-			for x in range(self.get_min_range(n), self.get_max_range(n)+1):
-				cool_list[n]= x #set the digit at that list's location
-
-				if (self.check_break_condition(cool_list)): #if breaking
-					break
-				self.solve_problem_like_a_boss(self.convert_lists_to_str(cool_list), n+1)
-		else: #whole digit is filled
-			if (self.is_valid(cool_list)):
-				self.total_valid_count += 1
-				self.solution.append(cool_list)	
-				logging.info('[%s] %s'% (self.total_valid_count, cool_list))
-
-	def solve_problem_like_a_boss2(self, cool_list, n, print_progress= False):
+	def solve_problem_like_a_boss(self, cool_list, n, print_progress= False):
 		self.total_count+= 1
 
 		if (print_progress):
@@ -145,7 +154,7 @@ class BikesForDays():
 		
 
 		if n < self.bike_rack_length*2: #not all digits are filled yet
-			for x in range(self.get_min_range(n), self.get_max_range(n)+1):
+			for x in range(self.get_r_min_range(cool_list, n), self.get_r_max_range(cool_list, n)+1):
 				cool_list[n]= x #set the digit at that list's location
 
 				for m in range(n+1, self.bike_rack_length*2): #resetting the list
@@ -154,7 +163,7 @@ class BikesForDays():
 				if (self.check_break_condition(cool_list)): #if breaking
 					break
 
-				self.solve_problem_like_a_boss2(cool_list, n+1) #else go to the next digit
+				self.solve_problem_like_a_boss(cool_list, n+1) #else go to the next digit
 		else: #whole digit is filled
 			if (self.is_valid(cool_list)):
 				self.total_valid_count += 1
@@ -167,11 +176,11 @@ class BikesForDays():
 
 
 if __name__ == '__main__':
-	bfd= BikesForDays([4]*5)
+	bfd= BikesForDays([4]*3)
 	start_time = time.time()
 	#bfd.solve_problem()
 	#bfd.solve_problem_like_a_boss(bfd.convert_lists_to_str(bfd.get_starting_list()), 0)
-	bfd.solve_problem_like_a_boss2(bfd.get_starting_list(), 0)
+	bfd.solve_problem_like_a_boss(bfd.get_starting_list(), 0)
 	bfd.print_meta()
 	elapsed_time = time.time() - start_time
 	logging.info('Time elapsed: %s' % time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
