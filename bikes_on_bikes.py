@@ -152,7 +152,7 @@ class BikesForDays():
 		else: #whole digit is filled
 			if (self.is_valid(cool_list)):
 				self.total_valid_count += 1
-				self.solution.append(list(cool_list)	)
+				#self.solution.append(list(cool_list))
 				logging.info('[%s] %s'% (self.total_valid_count, cool_list))
 
 	def save_solution(self):
@@ -161,7 +161,7 @@ class BikesForDays():
 
 
 if __name__ == '__main__':
-	bfd= BikesForDays([4,4,4])
+	bfd= BikesForDays([4,4,4,4])
 	start_time = time.time()
 	#bfd.solve_problem()
 	#bfd.solve_problem_like_a_boss(bfd.convert_lists_to_str(bfd.get_starting_list()), 0)
@@ -169,7 +169,7 @@ if __name__ == '__main__':
 	bfd.print_meta()
 	elapsed_time = time.time() - start_time
 	logging.info('Time elapsed: %s' % time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-	bfd.save_solution()
+	#bfd.save_solution()
 	logging.info('run complete.')
 
 
