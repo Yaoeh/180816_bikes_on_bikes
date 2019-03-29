@@ -1,2 +1,3 @@
 # bikes_on_bikes
-Solving the sets of combinations for the bike racks
+
+Trying to find the size of the state space based on the moving of bikes between bike racks between the university. Did solve it for 4, but ultimately deemed by the professor to be impractical exploration.
